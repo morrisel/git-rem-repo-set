@@ -1,0 +1,70 @@
+#!/bin/bash
+#
+# Script to initialize a Git repository and push it to GitHub
+#
+# This script will:
+#   - Prompt the user for their GitHub username and desired repository name
+#   - If no repository name is provided, it will use the current directory name
+#   - Create a new Git repository in the current directory
+#   - Add a remote origin pointing to the specified GitHub repository
+#   - Push the initial commit to the remote#
+#
+
+
+# Check if Git is installed
+if ! command -v git &> /dev/null; then
+    echo "Error: Git is not installed. Please install Git and try again."
+    exit 1
+fi
+
+# Initializations Parameters
+# ==========================
+
+# Base variables path
+# -------------------
+ENV="${USER}"
+BASE_PATH="`echo ~`"
+CURR_RELATIVE_PATH="~${PWD:${#BASE_PATH}}"
+FULL_PATH="${PWD}"
+CURR_DIR="`basename ${PWD}`"
+
+USER_NAME=""
+USER_EMAIL=""
+
+GIT_USER_NAME=""
+GIT_REPO_NAME=""
+GIT_REMOTE_URL=""
+
+
+echo "user local configuration for local repository"
+echo "---------------------------------------------"
+read -p "Enter your Git username: " USER_NAME
+read -p "Enter your Git email: " USER_EMAIL
+git config --local user.name "${USER_NAME}"
+git config --local user.email ${USER_EMAIL}
+git config --local core.editor "vim"
+echo
+
+echo "setup remote configuration for local repository"
+echo "-----------------------------------------------"
+read -p "Please insert your user_name of GitHub account: " GIT_USER_NAME
+read -p "Enter the repository name (leave blank to use the current directory name): " GIT_REPO_NAME
+
+# If no repository name is provided, use the current directory name
+if [[ -z "${GIT_REPO_NAME}" ]]; then
+    GIT_REPO_NAME=${CURR_DIR}
+fi
+
+# Construct the GitHub repository URL based on the provided data
+REMOTE_URL="https://github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git"
+
+echo ${REMOTE_URL}
+
+echo "# ${GIT_REPO_NAME}" >> README.md
+git init
+git add README.md
+git commit -m "Initial commit"
+git branch -M main
+git remote add origin ${REMOTE_URL}
+#git push -u origin main
+
