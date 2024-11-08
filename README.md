@@ -1,2 +1,1 @@
-# git-rem-repo-set
-# https://github.com/morrisel/git-remote-repo-set
+# git-remote-repo-set
